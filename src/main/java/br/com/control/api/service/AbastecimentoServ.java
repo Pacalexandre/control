@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.control.api.entity.Abastecimento;
 import br.com.control.api.repository.AbastecimentoRepo;
@@ -32,8 +33,16 @@ public class AbastecimentoServ implements Serializable {
 		}).orElse(ResponseEntity.notFound().build());
 	}
 	
-	public ResponseEntity<Object> altera(Integer id) {
-		return
+	public ResponseEntity<Abastecimento> altera(Integer id, @RequestBody Abastecimento abastecimento) {
+		return this.abaRepo.findById(id).map( record ->{
+			record.setDataAbastecimetno(abastecimento.getDataAbastecimetno());
+			record.setLitros(abastecimento.getLitros());
+			record.setOdometro(abastecimento.getOdometro());
+			record.setTipoCombustivel(abastecimento.getTipoCombustivel());
+			record.setValorLitro(abastecimento.getValorLitro());
+			Abastecimento update = abaRepo.save(record);
+			return ResponseEntity.ok().body(update);
+		}).orElse(ResponseEntity.notFound().build());
 	}
 	
 }
